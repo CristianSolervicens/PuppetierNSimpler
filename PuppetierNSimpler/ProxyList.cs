@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 namespace PuppetierNSimpler;
 
 
-public class Proxy
+public class ProxyDef
 {
     public string Address { get; set; }
     public string Username { get; set; }
     public string Password { get; set; }
 
-    public Proxy(string address, string username = "", string password = "")
+    public ProxyDef(string address, string username = "", string password = "")
     {
         this.Address = address;
         this.Username = username;
@@ -25,10 +25,10 @@ public class Proxy
 }
 
 
-public class ProxyList: List<Proxy>
+public class ProxyList: List<ProxyDef>
 {
     
-    public Proxy GetRandomProxy()
+    public ProxyDef GetRandomProxy()
     {
         Random random = new Random();
         int randomIndex = random.Next(this.Count);
@@ -44,9 +44,9 @@ public class ProxyList: List<Proxy>
         // Read the file
         string json = System.IO.File.ReadAllText(filePath);
         // Deserialize the JSON
-        List<Proxy> proxyList = System.Text.Json.JsonSerializer.Deserialize<List<Proxy>>(json);
+        List<ProxyDef> proxyList = System.Text.Json.JsonSerializer.Deserialize<List<ProxyDef>>(json);
         // Add the proxies to the list
-        foreach (Proxy proxy in proxyList)
+        foreach (ProxyDef proxy in proxyList)
         {
             this.Add(proxy);
         }

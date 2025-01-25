@@ -24,7 +24,7 @@ public class Program
         }
 
         Console.WriteLine("");
-        Proxy proxy = proxyes.GetRandomProxy();
+        ProxyDef proxy = proxyes.GetRandomProxy();
         Console.WriteLine($"Random Proxy: {proxy.Address}");
         Console.WriteLine("");
 
@@ -32,6 +32,7 @@ public class Program
         try
         {
             var scrap = new Scrapper();
+            Console.WriteLine("Scraping with Puppeteer");
             await scrap.Scrap(proxy);
         }
         catch (Exception e)
@@ -46,6 +47,7 @@ public class Program
         try
         {
             var scrap = new Scrapper();
+            Console.WriteLine("Scraping with HTTPRequest");
             var value = scrap.Scrapper2(proxy);
             Console.WriteLine($"Mi IP de Salida {value}");
         }
@@ -83,6 +85,21 @@ public class Program
             Console.WriteLine("ScrapperHttpClientAsync " + e.Message);
         }
 
+        Console.WriteLine("");
+        // PlayWright
+        try
+         {
+            var scrap = new Scrapper();
+            Console.WriteLine("Scraping with PlayWright");
+            await scrap.ScrapPLayWright(proxy);
+            
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("ScrapperPlaywright " + e.Message);
+        }
+
+        Console.WriteLine("");
 
         ///Simple SIN proxy
         try

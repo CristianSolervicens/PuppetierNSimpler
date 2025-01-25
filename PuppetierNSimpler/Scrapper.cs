@@ -8,16 +8,17 @@ using System.Threading.Tasks;
 using PuppeteerSharp;
 using static System.Net.WebRequestMethods;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.Playwright;
 
 
 namespace PuppetierNSimpler;
 
 class Scrapper
 {
-    public async Task Scrap(Proxy proxy)
+    public async Task Scrap(ProxyDef proxy)
     {
 
-        IBrowser ext_browser = null;
+        PuppeteerSharp.IBrowser ext_browser = null;
         BrowserFetcher browserFetcher = new();
         await browserFetcher.DownloadAsync();
         try { 
@@ -57,7 +58,36 @@ class Scrapper
          
     }
 
-    public string Scrapper2(Proxy proxy)
+
+    public async Task ScrapPLayWright(ProxyDef proxy)
+    {
+        var playwright = await Playwright.CreateAsync();
+
+        Proxy pw_proxy = new Proxy
+        {
+            Server = proxy.Address
+        };
+
+        if (proxy.Username != "" && proxy.Password != "")
+        {
+            pw_proxy.Username = proxy.Username;
+            pw_proxy.Password = proxy.Password;
+        }
+
+        var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
+        {
+            Proxy = pw_proxy
+        });
+        var context = await browser.NewContextAsync();
+        var page = await context.NewPageAsync();
+        await page.GotoAsync("http://wtfismyip.com/text");
+        var pageContent = await page.TextContentAsync("body");
+        Console.WriteLine(pageContent);
+        await browser.CloseAsync();
+    }
+
+
+    public string Scrapper2(ProxyDef proxy)
     {
         using (WebClient client = new WebClient())
         {
@@ -77,7 +107,7 @@ class Scrapper
 
 
     //WebRequest DEPRECADO usar HttpClient
-    public string ScrapperWR(Proxy proxy)
+    public string ScrapperWR(ProxyDef proxy)
     {
         WebRequest request = WebRequest.Create("http://wtfismyip.com/text");
         WebProxy wp = new WebProxy(proxy.Address);
@@ -104,7 +134,7 @@ class Scrapper
     }
 
 
-    public async Task<string> ScrapperHttpClientAsync(Proxy proxy)
+    public async Task<string> ScrapperHttpClientAsync(ProxyDef proxy)
     {
         HttpClientHandler handler = new HttpClientHandler();
         handler.Proxy = new WebProxy(proxy.Address);
